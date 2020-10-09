@@ -6,12 +6,20 @@ terraform {
     }
   }
 
+  backend "remote" {
+    organization = "poom"
+
+    workspaces {
+      name = "poom-terraform-workspace"
+    }
+  }
+
   required_version = ">= 0.13.4"
 }
 
 // Configure the Google Cloud provider
 provider "google" {
-  credentials = file("poom-terraform-workshop.json")
+  credentials = var.google_credentials
   project     = "poom-terraform-workshop"
   region      = "asia-southeast1"
 
@@ -51,7 +59,7 @@ resource "google_compute_instance" "default" {
   }
 
   metadata = {
-    ssh-keys = "poom:${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "poom:${var.ssh_key_poom}"
   }
 }
 
